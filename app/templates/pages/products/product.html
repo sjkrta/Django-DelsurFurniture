@@ -1,0 +1,159 @@
+{% extends "home.html" %}
+{% block title %}
+    Product
+{% endblock title %}
+{% block outlet %}
+    <div class="container-wrapper">
+        <div class="product-container">
+            <div class="image-container">
+                <img class="main-image" src="https://picsum.photos/201"/>
+                <div class="image-lists">
+                    <img src="https://picsum.photos/201" onClick="changePic(this)"/>
+                    <img src="https://picsum.photos/202" onClick="changePic(this)"/>
+                    <img src="https://picsum.photos/203" onClick="changePic(this)"/>
+                    <img src="https://picsum.photos/204" onClick="changePic(this)"/>
+                    <img src="https://picsum.photos/205" onClick="changePic(this)"/>
+                    <img src="https://picsum.photos/206" onClick="changePic(this)"/>
+                    <img src="https://picsum.photos/207" onClick="changePic(this)"/>
+                    <img src="https://picsum.photos/208" onClick="changePic(this)"/>
+                    <img src="https://picsum.photos/209" onClick="changePic(this)"/>
+                </div>
+            </div>
+            <div class="info-container">
+                <h1 class="product-title">Palladia Executive Desk, Split Oak</h1>
+                <div class="product-ratings">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         fill="currentColor"
+                         class="bi bi-star-fill"
+                         viewBox="0 0 16 16">
+                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         fill="currentColor"
+                         class="bi bi-star-fill"
+                         viewBox="0 0 16 16">
+                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         fill="currentColor"
+                         class="bi bi-star-fill"
+                         viewBox="0 0 16 16">
+                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         fill="currentColor"
+                         class="bi bi-star-half"
+                         viewBox="0 0 16 16">
+                        <path d="M5.354 5.119 7.538.792A.516.516 0 0 1 8 .5c.183 0 .366.097.465.292l2.184 4.327 4.898.696A.537.537 0 0 1 16 6.32a.548.548 0 0 1-.17.445l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256a.52.52 0 0 1-.146.05c-.342.06-.668-.254-.6-.642l.83-4.73L.173 6.765a.55.55 0 0 1-.172-.403.58.58 0 0 1 .085-.302.513.513 0 0 1 .37-.245l4.898-.696zM8 12.027a.5.5 0 0 1 .232.056l3.686 1.894-.694-3.957a.565.565 0 0 1 .162-.505l2.907-2.77-4.052-.576a.525.525 0 0 1-.393-.288L8.001 2.223 8 2.226v9.8z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         fill="currentColor"
+                         class="bi bi-star"
+                         viewBox="0 0 16 16">
+                        <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                    </svg>
+                    <span class="ratings-count">( 15 )</span>
+                </div>
+                <div class="product-price-discount">
+                    <span class="selling-price">$ 80.99</span>
+                    <span class="market-price">$ 92.98</span>
+                    <span class="discount">15% OFF</span>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="product-color">
+                        <label for="color">COLOR</label>
+                        <select name="color" id="color">
+                            <option value="Red">
+                                Red
+                            </option>
+                            <option value="Orange">
+                                Orange
+                            </option>
+                            <option value="Purple">
+                                Purple
+                            </option>
+                        </select>
+                    </div>
+                    <div class="product-quantity">
+                        <label for="quantity">QUANTITY</label>
+                        <select name="quantity" id="quantity">
+                            <option value="1">
+                                1
+                            </option>
+                            <option value="2">
+                                2
+                            </option>
+                            <option value="3">
+                                3
+                            </option>
+                        </select>
+                    </div>
+                    <button type="submit">
+                        ADD TO CART
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             fill="currentColor"
+                             class="bi bi-bag-plus-fill"
+                             viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5v-.5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0zM8.5 8a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V12a.5.5 0 0 0 1 0v-1.5H10a.5.5 0 0 0 0-1H8.5V8z"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <h2 class="product-information-title">Product Information</h2>
+        <div class="product-information">
+          Brand	‎Yamaha
+Manufacturer	‎Yamaha Music Australia
+Model Number	‎YSP-2700
+Part Number	‎YSP2700B
+Special Features	‎Wireless, Bluetooth
+Mounting Hardware	‎Quick Reference Guide, Cardboard microphone stand, MusicCast Setup Guide, Optical digital audio cable (1.5M), Batteries (x2) AAA, Stands (x2), Intellibeam microphone (6M), Remote control, Owners Manual
+Number Of Items	‎1
+Image Brightness	‎Lumens
+Speaker Surround Sound Channel Configuration	‎5.1
+Speaker Connectivity	‎Wireless
+Output Wattage	‎107
+Power Source	‎Corded Electric
+Batteries Required	‎No
+Connector Type	‎Bluetooth, HDMI
+Mounting type	‎Wall Mount
+Includes AC Adapter	‎No
+Product dimensions	‎15.4 x 94.4 x 5.1 cm; 5.7 Kilograms
+Item Weight	‎5.7 kg
+Manufacturer	‎Yamaha Music Australia
+ASIN	‎B078JSXZ9Z
+Country/Region of origin	‎Japan
+Item Model Number	‎YSP-2700
+Date First Available	‎5 December 2017
+
+        </div>
+        <h2 class="product-description-title">Product Description</h2>
+        <div class="product-description">
+          Brand	‎Yamaha
+Manufacturer	‎Yamaha Music Australia
+Model Number	‎YSP-2700
+Part Number	‎YSP2700B
+Special Features	‎Wireless, Bluetooth
+Mounting Hardware	‎Quick Reference Guide, Cardboard microphone stand, MusicCast Setup Guide, Optical digital audio cable (1.5M), Batteries (x2) AAA, Stands (x2), Intellibeam microphone (6M), Remote control, Owners Manual
+Number Of Items	‎1
+Image Brightness	‎Lumens
+Speaker Surround Sound Channel Configuration	‎5.1
+Speaker Connectivity	‎Wireless
+Output Wattage	‎107
+Power Source	‎Corded Electric
+Batteries Required	‎No
+Connector Type	‎Bluetooth, HDMI
+Mounting type	‎Wall Mount
+Includes AC Adapter	‎No
+Product dimensions	‎15.4 x 94.4 x 5.1 cm; 5.7 Kilograms
+Item Weight	‎5.7 kg
+Manufacturer	‎Yamaha Music Australia
+ASIN	‎B078JSXZ9Z
+Country/Region of origin	‎Japan
+Item Model Number	‎YSP-2700
+Date First Available	‎5 December 2017
+        </div>
+{% include "includes/products.html" with title="Related Products" link="deals"%}
+{% include "includes/products.html" with title="Exclusive Deals" link="deals"%}
+    {% endblock outlet %}
