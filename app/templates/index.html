@@ -1,8 +1,9 @@
 {% extends "home.html" %}
 {% block title %}Homepage{% endblock title %}
 {% block outlet %}
+</br>
 {% include "includes/carousel.html" %}
-{% include "includes/products.html" with title="Exclusive Deals" link="deals"%}
-{% include "includes/products.html" with title="Home & Kitchen" link="home&kitchen"%}
-{% include "includes/products.html" with title="Gardening" link="Gardern"%}
+{% for i in ProductsByCategory %}
+{% include "includes/products.html" with category=i.category products=i.products %}
+{% endfor %}
 {% endblock outlet %}

@@ -1,11 +1,10 @@
 <div class="container-wrapper">
-    <a href={{link}} class="container-title">
-        <span class="title">{{title}}</span>
+    <a href={% url 'category' i.category.id %} class="container-title">
+        <span class="title">{{ category.name }}</span>
         <span class="container-button">See all
             <svg xmlns="http://www.w3.org/2000/svg"
                  width="25"
-                 height="25
-                 "
+                 height="25 "
                  fill="currentColor"
                  class="bi bi-arrow-right"
                  viewBox="0 0 16 16">
@@ -14,61 +13,15 @@
         </span>
     </a>
     <div class="products-container">
-        <a href="1" class="product">
-            <img src="https://picsum.photos/id/237/200/300" alt="Your image url">
+        {% for i in products %}
+        <a href={% url 'product' i.product.id %} class="product">
+            <img src={{i.image}} alt="Your image url">
             <div class="discount-price">
-                <div class="price">AU $16.03</div>
-                <div class="discount">15% off</div>
+                <div class="price">${{i.product.price}}</div>
+                <div class="discount">{{i.product.discount}}% OFF</div>
             </div>
-            <div class="original-price">AU $30.86</div>
+            <div class="original-price">${{i.product.price}}</div>
         </a>
-        <a href="1" class="product">
-            <img src="https://picsum.photos/id/237/200/300" alt="Your image url">
-            <div class="discount-price">
-                <div class="price">AU $16.03</div>
-                <div class="discount">15% off</div>
-            </div>
-            <div class="original-price">AU $30.86</div>
-        </a>
-        <a href="1" class="product">
-            <img src="https://picsum.photos/id/237/200/300" alt="Your image url">
-            <div class="discount-price">
-                <div class="price">AU $16.03</div>
-                <div class="discount">15% off</div>
-            </div>
-            <div class="original-price">AU $30.86</div>
-        </a>
-        <a href="1" class="product">
-            <img src="https://picsum.photos/id/237/200/300" alt="Your image url">
-            <div class="discount-price">
-                <div class="price">AU $16.03</div>
-                <div class="discount">15% off</div>
-            </div>
-            <div class="original-price">AU $30.86</div>
-        </a>
-        <a href="1" class="product">
-            <img src="https://picsum.photos/id/237/200/300" alt="Your image url">
-            <div class="discount-price">
-                <div class="price">AU $16.03</div>
-                <div class="discount">15% off</div>
-            </div>
-            <div class="original-price">AU $30.86</div>
-        </a>
-        <a href="1" class="product">
-            <img src="https://picsum.photos/id/237/200/300" alt="Your image url">
-            <div class="discount-price">
-                <div class="price">AU $16.03</div>
-                <div class="discount">15% off</div>
-            </div>
-            <div class="original-price">AU $30.86</div>
-        </a>
-        <a href="1" class="product">
-            <img src="https://picsum.photos/id/237/200/300" alt="Your image url">
-            <div class="discount-price">
-                <div class="price">AU $16.03</div>
-                <div class="discount">15% off</div>
-            </div>
-            <div class="original-price">AU $30.86</div>
-        </a>
+        {% endfor %}
     </div>
 </div>

@@ -136,24 +136,18 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-
-class CategoryProduct(models.Model):
+class Color(models.Model):
     name = models.CharField(max_length=100)
-    category = models.ForeignKey(
-        Category, related_name='categories', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="categories/products")
-    createdDate = models.DateTimeField(auto_now=True)
-
     def __str__(self):
         return self.name
-
-
+    
 class Product(models.Model):
-    category_product_id = models.ForeignKey(
-        CategoryProduct, related_name='products', on_delete=models.CASCADE)
+    category_id = models.ForeignKey(
+        Category, related_name='products', on_delete=models.CASCADE)
+    colors = models.ManyToManyField(Color,related_name='colors')
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    discount = models.DecimalField(max_digits=2, decimal_places=2, default=0)
+    discount = models.DecimalField(max_digits=5, decimal_places=2)
     stock = models.IntegerField()
     warranty = models.CharField(max_length=100)
     description = RichTextField()
@@ -174,19 +168,13 @@ class Review(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)
 
 
-class Color(models.Model):
-    color = models.CharField(max_length=100)
-    product_id = models.ForeignKey(
-        Product, related_name='colors', on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.color
 
 
 class ProductImage(models.Model):
     product_id = models.ForeignKey(
         Product, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="categories/products/product")
+    image = models.ImageField(upload_to="products")
 
     def __str__(self):
         return self.product_id.name
@@ -221,8 +209,12 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order_id = models.ForeignKey(
-        Order, related_name='orderItem', on_delete=models.CASCADE)
+        Order, related_name='orders', on_delete=models.CASCADE)
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
+    color = models.ForeignKey(Color, null=True, blank=True, on_delete=models.CASCADE, related_name="orderedColor")
+
+    def __str__(self):
+        return self.order_id.order_uuid

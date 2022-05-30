@@ -6,21 +6,13 @@
     <div class="container-wrapper">
         <div class="product-container">
             <div class="image-container">
-                <img class="main-image" src="https://picsum.photos/201"/>
+                <img class="main-image" src={{ image }}/>
                 <div class="image-lists">
-                    <img src="https://picsum.photos/201" onClick="changePic(this)"/>
-                    <img src="https://picsum.photos/202" onClick="changePic(this)"/>
-                    <img src="https://picsum.photos/203" onClick="changePic(this)"/>
-                    <img src="https://picsum.photos/204" onClick="changePic(this)"/>
-                    <img src="https://picsum.photos/205" onClick="changePic(this)"/>
-                    <img src="https://picsum.photos/206" onClick="changePic(this)"/>
-                    <img src="https://picsum.photos/207" onClick="changePic(this)"/>
-                    <img src="https://picsum.photos/208" onClick="changePic(this)"/>
-                    <img src="https://picsum.photos/209" onClick="changePic(this)"/>
+                    {% for i in images %}<img src={{ i.image.url }} onClick="changePic(this)"/>{% endfor %}
                 </div>
             </div>
             <div class="info-container">
-                <h1 class="product-title">Palladia Executive Desk, Split Oak</h1>
+                <h1 class="product-title">{{ product.name }}</h1>
                 <div class="product-ratings">
                     <svg xmlns="http://www.w3.org/2000/svg"
                          fill="currentColor"
@@ -55,38 +47,32 @@
                     <span class="ratings-count">( 15 )</span>
                 </div>
                 <div class="product-price-discount">
-                    <span class="selling-price">$ 80.99</span>
-                    <span class="market-price">$ 92.98</span>
-                    <span class="discount">15% OFF</span>
+                    <span class="selling-price">$ {{ product.price }}</span>
+                    <span class="market-price">$ {{ product.price }}</span>
+                    <span class="discount">{{ product.discount }}% OFF</span>
                 </div>
                 <form method="post">
                     {% csrf_token %}
                     <div class="product-color">
                         <label for="color">COLOR</label>
                         <select name="color" id="color">
-                            <option value="Red">
-                                Red
+                            {% for color in product.colors.all %}
+                            <option value={{ color.id }}>
+                                {{ color.name }}
                             </option>
-                            <option value="Orange">
-                                Orange
-                            </option>
-                            <option value="Purple">
-                                Purple
-                            </option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="product-quantity">
                         <label for="quantity">QUANTITY</label>
                         <select name="quantity" id="quantity">
-                            <option value="1">
-                                1
-                            </option>
-                            <option value="2">
-                                2
-                            </option>
-                            <option value="3">
-                                3
-                            </option>
+                            {% with ''|center:product.stock as range %}
+                                {% for i in range %}
+                                <option value={{forloop.counter}}>
+                                    {{forloop.counter}}
+                                </option>
+                                {% endfor %}
+                            {% endwith %}
                         </select>
                     </div>
                     <button type="submit">
@@ -101,59 +87,10 @@
                 </form>
             </div>
         </div>
-        <h2 class="product-information-title">Product Information</h2>
-        <div class="product-information">
-          Brand	‎Yamaha
-Manufacturer	‎Yamaha Music Australia
-Model Number	‎YSP-2700
-Part Number	‎YSP2700B
-Special Features	‎Wireless, Bluetooth
-Mounting Hardware	‎Quick Reference Guide, Cardboard microphone stand, MusicCast Setup Guide, Optical digital audio cable (1.5M), Batteries (x2) AAA, Stands (x2), Intellibeam microphone (6M), Remote control, Owners Manual
-Number Of Items	‎1
-Image Brightness	‎Lumens
-Speaker Surround Sound Channel Configuration	‎5.1
-Speaker Connectivity	‎Wireless
-Output Wattage	‎107
-Power Source	‎Corded Electric
-Batteries Required	‎No
-Connector Type	‎Bluetooth, HDMI
-Mounting type	‎Wall Mount
-Includes AC Adapter	‎No
-Product dimensions	‎15.4 x 94.4 x 5.1 cm; 5.7 Kilograms
-Item Weight	‎5.7 kg
-Manufacturer	‎Yamaha Music Australia
-ASIN	‎B078JSXZ9Z
-Country/Region of origin	‎Japan
-Item Model Number	‎YSP-2700
-Date First Available	‎5 December 2017
-
-        </div>
-        <h2 class="product-description-title">Product Description</h2>
-        <div class="product-description">
-          Brand	‎Yamaha
-Manufacturer	‎Yamaha Music Australia
-Model Number	‎YSP-2700
-Part Number	‎YSP2700B
-Special Features	‎Wireless, Bluetooth
-Mounting Hardware	‎Quick Reference Guide, Cardboard microphone stand, MusicCast Setup Guide, Optical digital audio cable (1.5M), Batteries (x2) AAA, Stands (x2), Intellibeam microphone (6M), Remote control, Owners Manual
-Number Of Items	‎1
-Image Brightness	‎Lumens
-Speaker Surround Sound Channel Configuration	‎5.1
-Speaker Connectivity	‎Wireless
-Output Wattage	‎107
-Power Source	‎Corded Electric
-Batteries Required	‎No
-Connector Type	‎Bluetooth, HDMI
-Mounting type	‎Wall Mount
-Includes AC Adapter	‎No
-Product dimensions	‎15.4 x 94.4 x 5.1 cm; 5.7 Kilograms
-Item Weight	‎5.7 kg
-Manufacturer	‎Yamaha Music Australia
-ASIN	‎B078JSXZ9Z
-Country/Region of origin	‎Japan
-Item Model Number	‎YSP-2700
-Date First Available	‎5 December 2017
-        </div>
-{% include "includes/products.html" with title="Related Products" link="deals"%}
-{% include "includes/products.html" with title="Exclusive Deals" link="deals"%}
+        <h3 class="product-description-title">Product Description</h3>
+        <div class="product-description">{{ product.description|safe }}</div>
+        <h3 class="product-information-title">Product Specification</h3>
+        <div class="product-information">{{ product.specification|safe }}</div>
+        {% comment %} {% include "includes/products.html" with title="Related Products" link="deals"%} {% endcomment %}
+        {% comment %} {% include "includes/products.html" with title="Exclusive Deals" link="deals"%} {% endcomment %}
     {% endblock outlet %}

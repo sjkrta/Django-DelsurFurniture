@@ -1,15 +1,29 @@
 from datetime import datetime
 import re
 from django.shortcuts import redirect, render
-from app.models import Account, Carousel
+from app.models import Account, Carousel, Category, Order, Product, ProductImage
 from django.contrib.auth import authenticate, login, logout
-
+defaultProductImage = "/media/categories/products/default.png"
 
 def index_view(request):
+    productsByCategory = []
+    categories =  Category.objects.all()
+    for category in categories:
+        products=[]
+        for product in Category.objects.get(id=category.id).products.all():
+            image = defaultProductImage
+            try:
+                image = Product.objects.get(id=product.id).images.first().image.url
+            except:
+                pass
+            products.append({"product":product,"image":image})
+        productsByCategory.append({"category":category, "products":products})
     context = {
-        "Carousel":Carousel.objects.all()
+        "Carousel": Carousel.objects.all(),
+        "ProductsByCategory": productsByCategory
     }
     return render(request, 'index.html', context)
+
 
 def login_view(request):
     if request.user.is_anonymous:
@@ -27,7 +41,8 @@ def login_view(request):
             elif len(formValues['password']) < 4 or len(formValues['password']) > 20:
                 formErrors['password'] = "Your password is invalid."
             if len(formErrors) == 0:
-                user = authenticate(request, username=formValues['email'], password=formValues['password'])
+                user = authenticate(
+                    request, username=formValues['email'], password=formValues['password'])
                 print(user)
                 if user is not None:
                     login(request, user)
@@ -154,15 +169,20 @@ def category_view(request, category):
     return render(request, 'pages/products/category.html', context)
 
 
-def subcategory_view(request, subcategory):
-    context = {}
-    return render(request, 'pages/products/subcategory.html', context)
-
-
 def product_view(request, product):
+    product = Product.objects.get(id=product)
+    image = defaultProductImage
+    images = product.images.all()
+    try:
+        image = images.first().image.url
+    except:
+        pass
     context = {
-        "Carousel":Carousel.objects.all()
+        "images":images,
+        "image":image,
+        "product":product,
     }
+    print(product.colors)
     return render(request, 'pages/products/product.html', context)
 
 
@@ -172,7 +192,24 @@ def sales_view(request):
 
 
 def cart_view(request):
-    context = {}
+    cart = Order.objects.get(user_id=request.user)
+    orders = []
+    total = 0
+    for order in cart.orders.all():
+        productImage = defaultProductImage
+        try:
+            productImage = Product.objects.get(id=order.product_id.id).images.all().first().image.url
+        except:
+            pass
+        orders.append({"order":order,"image":productImage})
+        total = total + order.price
+    print(orders)
+    context = {
+        "promocode": "SALES2022",
+        "orders":orders,
+        "lenCart":len(orders),
+        "total": total
+    }
     return render(request, 'pages/shopping/cart.html', context)
 
 

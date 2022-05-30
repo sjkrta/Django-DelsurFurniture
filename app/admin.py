@@ -1,12 +1,11 @@
 from django.contrib import admin
-from .models import Address, Carousel, Category, CategoryProduct, Color, Product, ProductImage, Review, Order, OrderItem
+from .models import Address, Carousel, Category, Color, Product, ProductImage, Review, Order, OrderItem
 from django.contrib.auth.admin import UserAdmin
 from .models import Account
 
 # Register your models here.
 admin.site.register(Address)
 admin.site.register(Category)
-admin.site.register(CategoryProduct)
 admin.site.register(Color)
 admin.site.register(Product)
 admin.site.register(ProductImage)
