@@ -1,3 +1,4 @@
+{% load custom_tags %}
 <div class="container-wrapper">
     <a href={% url 'category' i.category.id %} class="container-title">
         <span class="title">{{ category.name }}</span>
@@ -17,7 +18,7 @@
         <a href={% url 'product' i.product.id %} class="product">
             <img src={{i.image}} alt="Your image url">
             <div class="discount-price">
-                <div class="price">${{i.product.price}}</div>
+                <div class="price">${{ i.product.price|calculateDiscount:i.product.discount }}</div>
                 <div class="discount">{{i.product.discount}}% OFF</div>
             </div>
             <div class="original-price">${{i.product.price}}</div>

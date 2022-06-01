@@ -62,8 +62,9 @@ class Account(AbstractBaseUser):
         ]
     )
     email = models.EmailField(verbose_name="email", max_length=60, unique=True)
-    profile_pic = models.ImageField(
-        max_length="255", upload_to=f"users/{id}", null=True, blank=True, default="users/profilepic.jpg")
+    image = models.ImageField(upload_to='carousel')
+    image = models.ImageField(
+        upload_to="users", null=True, blank=True, default="users/profile_pic.jpg")
     username = models.CharField(max_length=30, unique=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -136,19 +137,14 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-class Color(models.Model):
-    name = models.CharField(max_length=100)
-    def __str__(self):
-        return self.name
-    
 class Product(models.Model):
     category_id = models.ForeignKey(
         Category, related_name='products', on_delete=models.CASCADE)
-    colors = models.ManyToManyField(Color,related_name='colors')
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     discount = models.DecimalField(max_digits=5, decimal_places=2)
     stock = models.IntegerField()
+    color = models.CharField(max_length=100, default='None')
     warranty = models.CharField(max_length=100)
     description = RichTextField()
     specification = RichTextField()
@@ -167,10 +163,6 @@ class Review(models.Model):
     review = models.TextField(max_length=500, null=True, blank=True)
     createdAt = models.DateTimeField(auto_now_add=True)
 
-
-
-
-
 class ProductImage(models.Model):
     product_id = models.ForeignKey(
         Product, related_name='images', on_delete=models.CASCADE)
@@ -179,32 +171,34 @@ class ProductImage(models.Model):
     def __str__(self):
         return self.product_id.name
 
+class Coupon(models.Model):
+    coupon = models.CharField(max_length=15)
+    discount = models.IntegerField()
+    expired = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.coupon
 
 class Order(models.Model):
-    Status_choices = [
-        ('P', 'Pending'),
-        ('C', 'Canceled'),
-        ('D', 'Delivered'),
-    ]
     Delivery_choices = [
         ('P', 'Pick Up'),
         ('D', 'Delivered'),
     ]
     user_id = models.ForeignKey(Account, on_delete=models.CASCADE)
-    order_uuid = models.CharField(max_length=15)
     payment_method = models.CharField(max_length=200, blank=True, null=True)
-    shippingPrice = models.DecimalField(max_digits=12, decimal_places=2)
     total_price = models.DecimalField(max_digits=12, decimal_places=2)
-    delivery_choice = models.CharField(max_length=1, choices=Delivery_choices)
-    status = models.CharField(
-        max_length=1, choices=Status_choices, default=Status_choices[0])
+    delivery_choice = models.CharField(max_length=1, choices=Delivery_choices, default='P')
+    coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE, related_name="coupons", null=True, blank=True)
+    paid_status = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     paid_at = models.DateTimeField(auto_now_add=False, null=True, blank=True)
     delivered_at = models.DateTimeField(
         auto_now_add=False, null=True, blank=True)
 
     def __str__(self):
-        return self.order_uuid
+        return str(self.id)
 
 
 class OrderItem(models.Model):
@@ -214,7 +208,6 @@ class OrderItem(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
-    color = models.ForeignKey(Color, null=True, blank=True, on_delete=models.CASCADE, related_name="orderedColor")
 
     def __str__(self):
-        return self.order_id.order_uuid
+        return str(self.id)

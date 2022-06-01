@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block title %} Login {% endblock title %}
 {% block root %}
+{% include "includes/navbar2.html" %}
 <form id="account" class="login_form" method="post">
   {% csrf_token %}
   <h1 id="form-title">Welcome</h1>
@@ -17,7 +18,7 @@
     id="password"
     value="{{formValues.password}}"
   />
-  <div class="error">{{formErrors.email}}{{formErrors.password}}</div>
+  <div class="error center">{{formErrors.email}}{{formErrors.password}}{{message}}</div>
   <button id="login" type="submit">Login</button>
   <div id="form-info-container">
     Don't have an account yet? <a href="{% url 'register' %}">Create here.</a>

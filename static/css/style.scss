@@ -138,6 +138,14 @@ form#account>input,
     display: none;
   }
 }
+.success {
+  color: green;
+  letter-spacing: 0.5px;
+
+  &:empty {
+    display: none;
+  }
+}
 
 #register,
 #login {
@@ -264,6 +272,30 @@ nav {
   display: flex;
   align-items: center;
   gap: .5rem;
+
+  img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid gray;
+  }
+
+  ul {
+    li {
+      .see-profile {
+        font-size: 1.3rem;
+        font-weight: bold;
+        letter-spacing: 2px;
+        text-transform: capitalize;
+
+        img {
+          width: 50px;
+          height: 50px;
+        }
+      }
+    }
+  }
 }
 
 .nav-search:hover {
@@ -497,6 +529,8 @@ footer {
       }
     }
 
+
+
     .original-price {
       padding: 0 .5rem;
       font-size: 1rem;
@@ -590,6 +624,11 @@ footer {
         font-size: 1.2rem;
         color: $danger;
       }
+    }
+
+    .product-color {
+      font-size: 1.3rem;
+      color: rgb(86, 86, 86);
     }
 
     .product-color,
@@ -723,7 +762,7 @@ footer {
       gap: 2rem;
 
       .product-detail {
-        position: relative;
+        // position: relative;
         padding: 1rem;
         display: grid;
         grid-template-columns: max-content auto max-content;
@@ -746,6 +785,9 @@ footer {
 
           .product-title {
             margin-bottom: 0.7rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
           }
 
           .color {
@@ -776,34 +818,50 @@ footer {
 
             .right-side {
               select {
-                background-color: transparent;
+                background-color: white;
                 padding: 0.3rem;
-                max-width: 120px;
+                width: 100px;
+                border: 1px solid gray;
+                border-radius: 5px;
+              }
 
-                option {}
+              button {
+                margin-left: 1rem;
+                background-color: transparent;
+                padding: .2rem 1rem;
+                border: 1px solid gray;
+                color: black;
+                font-weight: bold;
+                letter-spacing: 1px;
+                border-radius: 5px;
+
+                &:hover {
+                  background-color: $primary-hover;
+                  color: white;
+                }
               }
             }
           }
         }
 
-        .remove-button {
-          position: absolute;
-          right: 0%;
-          top: 0;
-          padding: 0.5rem 1rem;
-          margin: 0.5rem 0;
-          background-color: transparent;
-          border: none;
-          transition: all 0.1s ease;
+        // .remove-button {
+        //   position: absolute;
+        //   right: 0%;
+        //   top: 0;
+        //   padding: 0.5rem 1rem;
+        //   margin: 0.5rem 0;
+        //   background-color: transparent;
+        //   border: none;
+        //   transition: all 0.1s ease;
 
-          &:hover {
-            color: #540054;
-            transform: scale(1.1);
-            cursor: pointer;
-          }
+        //   &:hover {
+        //     color: #540054;
+        //     transform: scale(1.1);
+        //     cursor: pointer;
+        //   }
 
-          svg {}
-        }
+        //   svg {}
+        // }
       }
     }
   }
@@ -813,6 +871,7 @@ footer {
     padding: 1rem;
     border-radius: 10px;
     background-color: white;
+
     .cart-summary-title {
       font-size: 1.5rem;
       color: $primary;
@@ -822,28 +881,70 @@ footer {
     }
 
     .summary {
-      text-align: center;
+      .order-list{
+        display: flex;
+        justify-content: space-between;
+      }
 
       .order-detail {
+        display: flex;
+        justify-content: space-between;
         font-size: 1.5rem;
+        color: $danger;
       }
 
       .order-info {
-        text-align: center;
         color: gray;
       }
 
+      .delivery-choice-container{
+        margin-bottom: 1rem;
+        select {
+          background-color: white;
+          padding: 0.3rem;
+          width: 150px;
+          border: 1px solid gray;
+          border-radius: 5px;
+        }
+
+        button {
+          margin-left: 1rem;
+          background-color: transparent;
+          padding: .2rem 1rem;
+          border: 1px solid gray;
+          color: black;
+          font-weight: bold;
+          letter-spacing: 1px;
+          border-radius: 5px;
+
+          &:hover {
+            background-color: $primary-hover;
+            color: white;
+          }
+        }
+        label{
+          display: block;
+          font-size: 1.2rem;
+          letter-spacing: 1px;
+          color: $primary;
+          font-weight: bold;
+          margin-bottom: .5rem;
+        }
+      }
       .coupon-container {
         display: grid;
-        .coupon-code-title{
+
+        .coupon-code-title {
           justify-self: start;
           font-size: 1.2rem;
           letter-spacing: 1px;
           color: $primary;
           font-weight: bold;
         }
-        .coupon-code-container{
+
+        .coupon-code-container {
           display: flex;
+
           input {
             border: none;
             background-color: $background-color;
@@ -853,11 +954,12 @@ footer {
             text-align: center;
             color: gray;
             border-radius: 10px;
-  
+
             &:focus {
               outline: none;
             }
           }
+
           .button-coupon {
             padding: 0.5rem;
             margin: 0.25rem;
@@ -865,15 +967,15 @@ footer {
             border-radius: 5px;
             color: white;
             background-color: purple;
-  
+
             &:hover {
               cursor: pointer;
+            }
           }
-        }
 
         }
-            
-          
+
+
 
       }
     }
@@ -920,6 +1022,162 @@ footer {
     }
   }
 }
-fieldset{
+
+fieldset {
   background-color: white;
+}
+
+
+.cart_empty_message {
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.cart_empty_button {
+  text-align: center;
+
+  a {
+    padding: 0.5rem 1rem;
+    letter-spacing: 1px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0.5rem 0;
+    border: 1px solid purple;
+    color: white;
+    background-color: purple;
+    width: 250px;
+    text-align: center;
+
+    &:hover {
+      background-color: #570057;
+      color: white;
+    }
+  }
+}
+
+.center {
+  display: grid;
+  justify-content: center;
+}
+
+table {
+  width: 100%;
+}
+
+tbody,
+td,
+tfoot,
+th,
+thead,
+tr {
+  border-color: inherit;
+  border-style: solid;
+  border: 5px solid $background-color;
+  padding: .5rem 1rem;
+}
+
+.profile-container {
+  display: grid;
+  .profile-image {
+    justify-self: center;
+    height: 200px;
+    width: 200px;
+    object-fit: cover;
+    border: 3px solid gray;
+    padding: 3px;
+    border-radius: 50%;
+    margin-top: 1rem;
+  }
+  .change_profile_pic{
+    padding: 0.5rem 1rem;
+    letter-spacing: 1px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 1.5rem auto;
+    width: 250px;
+    border: 2px solid purple;
+    color: purple;
+    background-color: transparent;
+    text-align: center;
+
+    &:hover {
+      background-color: #570057;
+      color: white;
+    }
+  }
+  .nav-pills {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    > div{
+      padding: 1rem;
+      cursor: pointer;
+      color:#000000;
+    }
+    > div:hover {
+      color: $primary;
+      background-color: rgb(201, 201, 201);
+    }
+    > div.active {
+      background-color: transparent;
+      color: $primary;
+      border-bottom: .5rem solid $primary;
+    }
+  }
+  .tab-content{
+    background-color: white;
+    // profile-tab
+    .profile-tab-basic-info, .profile-tab-address-detail{
+      display: grid;
+      table {
+        margin-top: 1rem;
+        tr{
+          th{
+            width: 200px;
+          }
+          td{
+      
+          }
+        }
+        .button-container {
+          text-align: center;
+        }
+      }
+    
+      button {
+        padding: 0.5rem 1rem;
+        letter-spacing: 1px;
+        font-weight: 600;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 0.5rem 0;
+        border: 2px solid purple;
+        color: purple;
+        background-color: transparent;
+        text-align: center;
+    
+        &:hover {
+          background-color: #570057;
+          color: white;
+        }
+      }
+    
+      padding: 0 1rem;
+    
+      h2 {
+        color: $primary;
+      }
+    }
+  }
+}
+
+
+#promoCode{
+  font-size: 1.1rem;
+  color: black;
+  letter-spacing: 1px;
+  font-weight: bold;
+  cursor: pointer;
 }

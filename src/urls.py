@@ -14,10 +14,10 @@ urlpatterns = [
     path('browse/', views.categories_view, name='browse'),
     path('sales/', views.sales_view, name='sales'),
     path('category/<int:category>/', views.category_view, name='category'),
-    path('product/<int:product>/', views.product_view, name='product'),
+    path('product/<int:productId>/', views.product_view, name='product'),
     path('cart/', views.cart_view, name='cart'),
     path('checkout/', views.checkout_view, name='checkout'),
-    path('<str:username>/', views.profile_view, name='profile'),
+    path('profile/<str:username>/', views.profile_view, name='profile'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

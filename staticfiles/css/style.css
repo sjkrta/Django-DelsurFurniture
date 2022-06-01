@@ -94,6 +94,12 @@ form#account > input,
   .error:empty {
     display: none; }
 
+.success {
+  color: green;
+  letter-spacing: 0.5px; }
+  .success:empty {
+    display: none; }
+
 #register,
 #login {
   width: 200px;
@@ -186,6 +192,20 @@ nav {
   display: flex;
   align-items: center;
   gap: .5rem; }
+  .nav-profile img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid gray; }
+  .nav-profile ul li .see-profile {
+    font-size: 1.3rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: capitalize; }
+    .nav-profile ul li .see-profile img {
+      width: 50px;
+      height: 50px; }
 
 .nav-search:hover {
   color: #800080;
@@ -406,6 +426,9 @@ footer {
       .product-container .info-container .product-price-discount .discount {
         font-size: 1.2rem;
         color: #ce0000; }
+    .product-container .info-container .product-color {
+      font-size: 1.3rem;
+      color: #565656; }
     .product-container .info-container .product-color,
     .product-container .info-container .product-quantity {
       display: grid;
@@ -498,7 +521,6 @@ footer {
     display: grid;
     gap: 2rem; }
     .cart-container .left .product .product-detail {
-      position: relative;
       padding: 1rem;
       display: grid;
       grid-template-columns: max-content auto max-content;
@@ -516,7 +538,10 @@ footer {
         justify-content: start;
         padding: 0.5rem; }
         .cart-container .left .product .product-detail .product-info .product-title {
-          margin-bottom: 0.7rem; }
+          margin-bottom: 0.7rem;
+          font-weight: bold;
+          font-size: 1.2rem;
+          letter-spacing: 1px; }
         .cart-container .left .product .product-detail .product-info .color {
           display: grid;
           grid-template-columns: 80px auto; }
@@ -527,22 +552,23 @@ footer {
           display: grid;
           grid-template-columns: 80px auto; }
           .cart-container .left .product .product-detail .product-info .quantity .right-side select {
-            background-color: transparent;
+            background-color: white;
             padding: 0.3rem;
-            max-width: 120px; }
-      .cart-container .left .product .product-detail .remove-button {
-        position: absolute;
-        right: 0%;
-        top: 0;
-        padding: 0.5rem 1rem;
-        margin: 0.5rem 0;
-        background-color: transparent;
-        border: none;
-        transition: all 0.1s ease; }
-        .cart-container .left .product .product-detail .remove-button:hover {
-          color: #540054;
-          transform: scale(1.1);
-          cursor: pointer; }
+            width: 100px;
+            border: 1px solid gray;
+            border-radius: 5px; }
+          .cart-container .left .product .product-detail .product-info .quantity .right-side button {
+            margin-left: 1rem;
+            background-color: transparent;
+            padding: .2rem 1rem;
+            border: 1px solid gray;
+            color: black;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-radius: 5px; }
+            .cart-container .left .product .product-detail .product-info .quantity .right-side button:hover {
+              background-color: #660066;
+              color: white; }
   .cart-container .right {
     display: grid;
     padding: 1rem;
@@ -554,43 +580,73 @@ footer {
       font-weight: bold;
       letter-spacing: 1px;
       margin-bottom: 1rem; }
-    .cart-container .right .summary {
-      text-align: center; }
-      .cart-container .right .summary .order-detail {
-        font-size: 1.5rem; }
-      .cart-container .right .summary .order-info {
-        text-align: center;
-        color: gray; }
-      .cart-container .right .summary .coupon-container {
-        display: grid; }
-        .cart-container .right .summary .coupon-container .coupon-code-title {
-          justify-self: start;
-          font-size: 1.2rem;
-          letter-spacing: 1px;
-          color: #800080;
-          font-weight: bold; }
-        .cart-container .right .summary .coupon-container .coupon-code-container {
-          display: flex; }
-          .cart-container .right .summary .coupon-container .coupon-code-container input {
-            border: none;
-            background-color: #ededed;
-            width: 100%;
-            font-size: 1.5rem;
-            margin: 0.2rem 0;
-            text-align: center;
-            color: gray;
-            border-radius: 10px; }
-            .cart-container .right .summary .coupon-container .coupon-code-container input:focus {
-              outline: none; }
-          .cart-container .right .summary .coupon-container .coupon-code-container .button-coupon {
-            padding: 0.5rem;
-            margin: 0.25rem;
-            align-self: end;
-            border-radius: 5px;
-            color: white;
-            background-color: purple; }
-            .cart-container .right .summary .coupon-container .coupon-code-container .button-coupon:hover {
-              cursor: pointer; }
+    .cart-container .right .summary .order-list {
+      display: flex;
+      justify-content: space-between; }
+    .cart-container .right .summary .order-detail {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.5rem;
+      color: #ce0000; }
+    .cart-container .right .summary .order-info {
+      color: gray; }
+    .cart-container .right .summary .delivery-choice-container {
+      margin-bottom: 1rem; }
+      .cart-container .right .summary .delivery-choice-container select {
+        background-color: white;
+        padding: 0.3rem;
+        width: 150px;
+        border: 1px solid gray;
+        border-radius: 5px; }
+      .cart-container .right .summary .delivery-choice-container button {
+        margin-left: 1rem;
+        background-color: transparent;
+        padding: .2rem 1rem;
+        border: 1px solid gray;
+        color: black;
+        font-weight: bold;
+        letter-spacing: 1px;
+        border-radius: 5px; }
+        .cart-container .right .summary .delivery-choice-container button:hover {
+          background-color: #660066;
+          color: white; }
+      .cart-container .right .summary .delivery-choice-container label {
+        display: block;
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+        color: #800080;
+        font-weight: bold;
+        margin-bottom: .5rem; }
+    .cart-container .right .summary .coupon-container {
+      display: grid; }
+      .cart-container .right .summary .coupon-container .coupon-code-title {
+        justify-self: start;
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+        color: #800080;
+        font-weight: bold; }
+      .cart-container .right .summary .coupon-container .coupon-code-container {
+        display: flex; }
+        .cart-container .right .summary .coupon-container .coupon-code-container input {
+          border: none;
+          background-color: #ededed;
+          width: 100%;
+          font-size: 1.5rem;
+          margin: 0.2rem 0;
+          text-align: center;
+          color: gray;
+          border-radius: 10px; }
+          .cart-container .right .summary .coupon-container .coupon-code-container input:focus {
+            outline: none; }
+        .cart-container .right .summary .coupon-container .coupon-code-container .button-coupon {
+          padding: 0.5rem;
+          margin: 0.25rem;
+          align-self: end;
+          border-radius: 5px;
+          color: white;
+          background-color: purple; }
+          .cart-container .right .summary .coupon-container .coupon-code-container .button-coupon:hover {
+            cursor: pointer; }
     .cart-container .right .shipping-info {
       text-align: center;
       color: gray; }
@@ -625,5 +681,121 @@ footer {
 
 fieldset {
   background-color: white; }
+
+.cart_empty_message {
+  font-size: 1.8rem;
+  text-align: center; }
+
+.cart_empty_button {
+  text-align: center; }
+  .cart_empty_button a {
+    padding: 0.5rem 1rem;
+    letter-spacing: 1px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0.5rem 0;
+    border: 1px solid purple;
+    color: white;
+    background-color: purple;
+    width: 250px;
+    text-align: center; }
+    .cart_empty_button a:hover {
+      background-color: #570057;
+      color: white; }
+
+.center {
+  display: grid;
+  justify-content: center; }
+
+table {
+  width: 100%; }
+
+tbody,
+td,
+tfoot,
+th,
+thead,
+tr {
+  border-color: inherit;
+  border-style: solid;
+  border: 5px solid #ededed;
+  padding: .5rem 1rem; }
+
+.profile-container {
+  display: grid; }
+  .profile-container .profile-image {
+    justify-self: center;
+    height: 200px;
+    width: 200px;
+    object-fit: cover;
+    border: 3px solid gray;
+    padding: 3px;
+    border-radius: 50%;
+    margin-top: 1rem; }
+  .profile-container .change_profile_pic {
+    padding: 0.5rem 1rem;
+    letter-spacing: 1px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 1.5rem auto;
+    width: 250px;
+    border: 2px solid purple;
+    color: purple;
+    background-color: transparent;
+    text-align: center; }
+    .profile-container .change_profile_pic:hover {
+      background-color: #570057;
+      color: white; }
+  .profile-container .nav-pills {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem; }
+    .profile-container .nav-pills > div {
+      padding: 1rem;
+      cursor: pointer;
+      color: #000000; }
+    .profile-container .nav-pills > div:hover {
+      color: #800080;
+      background-color: #c9c9c9; }
+    .profile-container .nav-pills > div.active {
+      background-color: transparent;
+      color: #800080;
+      border-bottom: 0.5rem solid #800080; }
+  .profile-container .tab-content {
+    background-color: white; }
+    .profile-container .tab-content .profile-tab-basic-info, .profile-container .tab-content .profile-tab-address-detail {
+      display: grid;
+      padding: 0 1rem; }
+      .profile-container .tab-content .profile-tab-basic-info table, .profile-container .tab-content .profile-tab-address-detail table {
+        margin-top: 1rem; }
+        .profile-container .tab-content .profile-tab-basic-info table tr th, .profile-container .tab-content .profile-tab-address-detail table tr th {
+          width: 200px; }
+        .profile-container .tab-content .profile-tab-basic-info table .button-container, .profile-container .tab-content .profile-tab-address-detail table .button-container {
+          text-align: center; }
+      .profile-container .tab-content .profile-tab-basic-info button, .profile-container .tab-content .profile-tab-address-detail button {
+        padding: 0.5rem 1rem;
+        letter-spacing: 1px;
+        font-weight: 600;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 0.5rem 0;
+        border: 2px solid purple;
+        color: purple;
+        background-color: transparent;
+        text-align: center; }
+        .profile-container .tab-content .profile-tab-basic-info button:hover, .profile-container .tab-content .profile-tab-address-detail button:hover {
+          background-color: #570057;
+          color: white; }
+      .profile-container .tab-content .profile-tab-basic-info h2, .profile-container .tab-content .profile-tab-address-detail h2 {
+        color: #800080; }
+
+#promoCode {
+  font-size: 1.1rem;
+  color: black;
+  letter-spacing: 1px;
+  font-weight: bold;
+  cursor: pointer; }
 
 /*# sourceMappingURL=style.css.map */

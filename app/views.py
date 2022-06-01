@@ -1,23 +1,26 @@
 from datetime import datetime
 import re
+from unicodedata import decimal
 from django.shortcuts import redirect, render
-from app.models import Account, Carousel, Category, Order, Product, ProductImage
+from app.models import Account, Carousel, Category, Coupon, Order, OrderItem, Product, ProductImage, Address
 from django.contrib.auth import authenticate, login, logout
 defaultProductImage = "/media/categories/products/default.png"
 
+
 def index_view(request):
     productsByCategory = []
-    categories =  Category.objects.all()
+    categories = Category.objects.all()
     for category in categories:
-        products=[]
+        products = []
         for product in Category.objects.get(id=category.id).products.all():
             image = defaultProductImage
             try:
-                image = Product.objects.get(id=product.id).images.first().image.url
+                image = Product.objects.get(
+                    id=product.id).images.first().image.url
             except:
                 pass
-            products.append({"product":product,"image":image})
-        productsByCategory.append({"category":category, "products":products})
+            products.append({"product": product, "image": image})
+        productsByCategory.append({"category": category, "products": products})
     context = {
         "Carousel": Carousel.objects.all(),
         "ProductsByCategory": productsByCategory
@@ -30,6 +33,10 @@ def login_view(request):
         formValues = {}
         formErrors = {}
         if request.method == "POST":
+            try:
+                del request.session['message']
+            except:
+                pass
             formValues['email'] = request.POST['email']
             formValues['password'] = request.POST['password']
             if formValues['email'] == "":
@@ -41,13 +48,20 @@ def login_view(request):
             elif len(formValues['password']) < 4 or len(formValues['password']) > 20:
                 formErrors['password'] = "Your password is invalid."
             if len(formErrors) == 0:
-                user = authenticate(
-                    request, username=formValues['email'], password=formValues['password'])
-                print(user)
-                if user is not None:
-                    login(request, user)
-                    return redirect('home')
-        context = {"formValues": formValues, "formErrors": formErrors}
+                try:
+                    email_search = Account.objects.get(
+                        email=formValues['email'])
+                    user = authenticate(
+                        request, username=formValues['email'], password=formValues['password'])
+                    if user is not None:
+                        login(request, user)
+                        return redirect('home')
+                    else:
+                        formErrors['email'] = 'Your password is incorrect.'
+                except:
+                    formErrors['email'] = "User with that email doesn't exist."
+        context = {"formValues": formValues, "formErrors": formErrors,
+                   "message": request.session.get('message') or ""}
         return render(request, 'pages/accounts/login.html', context)
     else:
         return redirect('home')
@@ -72,6 +86,10 @@ def register_view(request):
             year.append(currentyear)
             currentyear -= 1
         if request.method == "POST":
+            try:
+                del request.session['message']
+            except:
+                pass
             formValues['first_name'] = request.POST['first_name'].capitalize()
             formValues['last_name'] = request.POST['last_name'].capitalize()
             formValues['email'] = request.POST['email']
@@ -169,20 +187,65 @@ def category_view(request, category):
     return render(request, 'pages/products/category.html', context)
 
 
-def product_view(request, product):
-    product = Product.objects.get(id=product)
+def product_view(request, productId):
+    product = Product.objects.get(id=productId)
+    order = []
+    orderItem = []
+    quantity = 0
+    product_in_cart_message = None
+    try:
+        order = Order.objects.filter(user_id=request.user, paid_status=False)
+        orderItem = OrderItem.objects.filter(order_id=Order.objects.get(
+            user_id=request.user, paid_status=False), product_id=product)
+    except:
+        pass
+    # if order exists already in cart.
+    if len(orderItem) != 0:
+        quantity = orderItem[0].quantity
+        product_in_cart_message = "This product is in your cart."
+
+    # image
     image = defaultProductImage
     images = product.images.all()
     try:
         image = images.first().image.url
     except:
         pass
+
+    # post
+    if request.user.is_authenticated:
+        if 'addToCart' in request.POST:
+            quantity = int(request.POST['quantity'])
+            price = round(product.price-(product.discount/100)
+                          * product.price, 2)
+            if len(order) == 0:
+                order = Order.objects.create(user_id=request.user,
+                                             total_price=(price*quantity))
+                OrderItem.objects.create(
+                    order_id=order, product_id=product, price=price, quantity=quantity)
+                product_in_cart_message = "Item is added to your cart."
+            else:
+                order_id = Order.objects.get(
+                    user_id=request.user, paid_status=False)
+                if len(orderItem) == 0:
+                    OrderItem.objects.create(
+                        order_id=order_id, product_id=product, price=price, quantity=quantity)
+                    product_in_cart_message = "Item is added to your cart."
+                else:
+                    OrderItem.objects.filter(order_id=order_id, product_id=product).update(
+                        price=price, quantity=quantity)
+                    product_in_cart_message = "Cart is updated successfully"
+    else:
+        request.session['message'] = 'You have to login first to add products to cart.'
+        return redirect('login')
+
     context = {
-        "images":images,
-        "image":image,
-        "product":product,
+        "images": images,
+        "image": image,
+        "product": product,
+        "quantity": quantity,
+        "product_in_cart_message": product_in_cart_message
     }
-    print(product.colors)
     return render(request, 'pages/products/product.html', context)
 
 
@@ -191,24 +254,115 @@ def sales_view(request):
     return render(request, 'pages/products/sales.html', context)
 
 
+
+
+
+
+
+# cartview------------------------------------------------------------------------------------------------------
 def cart_view(request):
-    cart = Order.objects.get(user_id=request.user)
     orders = []
-    total = 0
-    for order in cart.orders.all():
-        productImage = defaultProductImage
+    cart = []
+    couponError = ""
+    couponSuccess = ""
+    delivery_choice = "P"
+    items = 0
+    delivery = 0
+    items_discount = 0
+    total_price = 0
+    coupon_discount = 0
+    coupon_discount_num = 0
+    if request.user.is_authenticated:
+        # checking if order exists
         try:
-            productImage = Product.objects.get(id=order.product_id.id).images.all().first().image.url
+            order = Order.objects.get(user_id=request.user, paid_status=False)
+            try:
+                coupon_discount_num = order.coupon.discount
+            except:
+                pass
+            # if exists give me all order items
+            cart = order.orders.all()
+            # changing delivery choice to choosed one
+            delivery_choice = order.delivery_choice
+            # to get all orders
+            for i in order.orders.all():
+                productImage = Product.objects.filter(
+                    id=i.product_id.id)[0].images.all()
+                # checking if image exists for product
+                try:
+                    productImage = productImage.first().image.url
+                except:
+                    productImage = defaultProductImage
+                # add all order items to orders list.
+                orders.append({"id": i.id, "image": productImage, "name": i.product_id.name, "color": i.product_id.color,
+                               "price": i.price, "stock": i.product_id.stock, "quantity": i.quantity})
         except:
-            pass
-        orders.append({"order":order,"image":productImage})
-        total = total + order.price
-    print(orders)
+            # if doesn't exists return empty list
+            orders=[]
+    # if delivery choice is submitted
+    if 'button_delivery_choice' in request.POST:
+        delivery_choice = request.POST['select_delivery_choice'] 
+        Order.objects.filter(user_id = request.user, paid_status=False).update(delivery_choice=delivery_choice)
+    # if coupon is applied
+    elif 'button_coupon' in request.POST:
+        input_coupon = request.POST['input_coupon']
+        try:
+            coupon = Coupon.objects.get(coupon = input_coupon)
+            if coupon.expired == True:
+                couponError = "This coupon code is expired."
+                couponSuccess = ""
+            else:
+                Order.objects.filter(user_id = request.user, paid_status=False).update(coupon = coupon)
+                coupon_discount_num = coupon.discount
+                couponError = ""
+                couponSuccess = "Coupon applied successfully"
+        except:
+            couponError = "Invalid Coupon"
+            couponSuccess = ""
+    # else update cart items individually
+    elif 'updateProductItem' in request.POST:
+        cart_order_id = request.POST['cart_order_id']
+        cart_order_index = int(request.POST['cart_order_index'])
+        quantity = int(request.POST['quantity'])
+        orderItem = OrderItem.objects.filter(id=cart_order_id)
+        if quantity == 0:
+            orderItem.delete()
+            orders.pop(cart_order_index-1)
+        else:
+            orderItem.update(quantity=quantity)
+            orders[cart_order_index-1]['quantity'] = quantity
+
+    try:
+        for i in cart:
+            items = items + (i.quantity * i.product_id.price)
+            total_price = total_price + i.quantity*i.price
+            items_discount = items - total_price
+
+        coupon_discount = round(coupon_discount_num*0.01*float(total_price),2)
+        # checking delivery choice
+        if Order.objects.get(user_id=request.user, paid_status=False).delivery_choice == 'D':
+            if total_price < 500:
+                delivery = 10.99
+            elif total_price < 1000:
+                delivery = 5.99
+            else:
+                delivery = 0
+        total_price = round(float(items - items_discount) - coupon_discount + delivery,2)
+    except:
+        print({"error":"order doesn't exist"})
+    
+    
     context = {
         "promocode": "SALES2022",
-        "orders":orders,
-        "lenCart":len(orders),
-        "total": total
+        "orders": orders,
+        "delivery_choice": delivery_choice,
+        "couponError": couponError,
+        "couponSuccess":couponSuccess,
+        "items":items,
+        "delivery":delivery,
+        "items_discount":items_discount,
+        "coupon_discount":coupon_discount,
+        'total_price':total_price,
     }
     return render(request, 'pages/shopping/cart.html', context)
 
@@ -219,5 +373,13 @@ def checkout_view(request):
 
 
 def profile_view(request, username):
-    context = {}
-    return render(request, 'pages/shopping/profile.html', context)
+    sidebar = [{"name": "Basic Info", "id":"basic-info","template": "includes/profileTabBasicInfo.html"},
+               {"name": "Your Orders", "id":"your-orders", "template": "includes/profileTabYourOrders.html"},
+               {"name": "Address Detail", "id":"address-detail", "template": "includes/profileTabAddressDetail.html"},
+               {"name": "Login & Security", "id":"login-and-security", "template": "includes/profileTabLoginSecurity.html"}]
+    context = {
+        "sidebar": sidebar,
+        "activeSidebar": sidebar[0],
+        "addressDetail": Address.objects.get(user_id = request.user)
+    }
+    return render(request, 'pages/accounts/profile.html', context)

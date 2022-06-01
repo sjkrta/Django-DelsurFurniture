@@ -4,99 +4,163 @@
 {% endblock title %}
 {% block outlet %}
     <div class="container-wrapper">
-        <div class="cart-container-title">YOUR CART ( {{ lenCart }} )</div>
-        <div class="cart-container">
-            <div class="left">
-                <hr />
-                <div class="info">
-                    <div class="info-title">15% OFF ALL FURNITURE</div>
-                    <div class="info-detail">
-                        Apply promo code
-                        <span class="promo-code" onClick="copyText()">
-                            {{ promocode }} <span class="file-outlined-copy" style="font-size: 1rem"></span>
-                        </span>
-                        to get the discount.
-                    </div>
-                    <div class="info-term">
-                        Offer ends 25th May. <a href="#">T&C Apply</a>
-                    </div>
-                </div>
-                <hr />
-                <div class="product">
-                    {% for i in orders %}
-                        <div class="product-detail">
-                            <img src={{ i.image }} />
-                            <div class="product-info">
-                                <div class="product-title">{{ i.order.product_id.name }}</div>
-                                <div class="color">
-                                    <div class="left-side">Color:</div>
-                                    <div class="right-side">
-                                        <b>{{ i.order.color }}</b>
-                                    </div>
-                                </div>
-                                <div class="price">
-                                    <div class="left-side">Total:</div>
-                                    <div class="right-side">
-                                        <b>$ {{ i.order.product_id.price }}</b>
-                                    </div>
-                                </div>
-                                <div class="quantity">
-                                    <div class="left-side">
-                                        <label for="quantity">Quantity:</label>
-                                    </div>
-                                    <div class="right-side">
-                                        <select name="quantity" id="quantity">
-                                            {% with ''|center:i.order.product_id.stock as range %}
-                                                {% for j in range %}
-                                                    <option value={{ forloop.counter }} {% if forloop.counter == i.order.quantity %}selected{% endif %}>
-                                                        {{forloop.counter}}
-                                                    </option>
-                                                {% endfor %}
-                                            {% endwith %}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="remove-button">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                     width="16"
-                                     height="16"
-                                     fill="currentColor"
-                                     class="bi bi-x-lg"
-                                     viewBox="0 0 16 16">
-                                    <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8
-                                    7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707
-                                    8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146
-                                    5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"
-                                    />
-                                </svg>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="right">
-                <div class="cart-summary-title">Order Summary</div>
-                <div class="summary">
-                    <div class="order-detail">
-                        Total: <b>$ {{total}}</b>
-                    </div>
-                    <div class="order-info">( inclusive of GST )</div>
+        {% if cart_length != 0 %}
+            <div class="cart-container-title">YOUR CART ( {{ cart_length }} )</div>
+            <div class="cart-container">
+                <div class="left">
                     <hr />
-                    <div class="coupon-container">
-                        <div class="coupon-code-title">Coupon Code</div>
-                        <div class="coupon-code-container">
-                            <Input type="text" />
-                            <div class="button-coupon">APPLY</div>
+                    <div class="info">
+                        <div class="info-title">15% OFF ALL FURNITURE</div>
+                        
+                        <div class="info-detail">
+                            Apply promo code
+                            <span id="promoCode">
+                                {{ promocode }}
+                            </span>
+                            to get the discount.
+                        </div>
+                        <div class="info-term">
+                            Offer ends 25th May. <a href="#">T&C Apply</a>
                         </div>
                     </div>
+                    <hr />
+                    <div class="product">
+                        {% for i in orders %}
+                            <div class="product-detail">
+                                <img src={{ i.image }} />
+                                <div class="product-info">
+                                    <div class="product-title">{{ i.name }}</div>
+                                    <div class="color">
+                                        <div class="left-side">Color:</div>
+                                        <div class="right-side">
+                                            <b>{{ i.color }}</b>
+                                        </div>
+                                    </div>
+                                    <div class="price">
+                                        <div class="left-side">Price:</div>
+                                        <div class="right-side">
+                                            <b>$ {{ i.price }}</b>
+                                        </div>
+                                    </div>
+                                    <div class="quantity">
+                                        <div class="left-side">
+                                            <label for="quantity">Quantity:</label>
+                                        </div>
+                                        <form method="post">
+                                            {% csrf_token %}
+                                            <div class="right-side">
+                                                <input id="orderItemCart"
+                                                       name="cart_order_id"
+                                                       type="hidden"
+                                                       value="{{ i.id }}"/>
+                                                <input id="orderItemCart"
+                                                       name="cart_order_index"
+                                                       type="hidden"
+                                                       value="{{ forloop.counter }}"/>
+                                                <select name="quantity" id="cart-quantity">
+                                                    <option value='0'>
+                                                        Delete
+                                                    </option>
+                                                    {% with ''|center:i.stock as range %}
+                                                        {% for j in range %}
+                                                            <option value={{ forloop.counter }} {% if forloop.counter == i.quantity %}selected{% endif %}>
+                                                                {{ forloop.counter }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    {% endwith %}
+                                                </select>
+                                                <button type="submit" name="updateProductItem">Update</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
-                <hr />
-                <div class="shipping-info">Shipping costs will be calculated at checkout.</div>
-                <hr />
-                <div class="button-item checkout">CHECKOUT NOW</div>
-                <div class="button-item continue-shopping">CONTINUE SHOPPING</div>
+                <div class="right">
+                    <div class="cart-summary-title">Order Summary</div>
+                    <div class="summary">
+                        <div class="order-summary">
+                            <div class="order-list">
+                                <div>Items:</div>
+                                <div>${{ items }}</div>
+                            </div>
+                            {% if delivery != 0 %}
+                                <div class="order-list">
+                                    <div>Delivery:</div>
+                                    <div>${{ delivery }}</div>
+                                </div>
+                            {% endif %}
+                            <div class="order-list">
+                                <div>Items Discount:</div>
+                                <div>-${{ items_discount }}</div>
+                            </div>
+                            {% if coupon_discount != 0 %}
+                                <div class="order-list">
+                                    <div>Coupon Discount:</div>
+                                    <div>-${{ coupon_discount }}</div>
+                                </div>
+                            {% endif %}
+                            <hr />
+                            {% if delivery != 0 %}<div class="shipping-info">Delivery is free for amount over $1000.</div><hr />{% endif %}
+                            
+                            <div class="order-detail">
+                                Order Total: <b>$ {{ total_price }}</b>
+                            </div>
+                            <div class="order-info">( inclusive of GST )</div>
+                        </div>
+                        <hr />
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="delivery-choice-container">
+                                <label for="delivery-choice">Delivery Choice</label>
+                                <select name="select_delivery_choice">
+                                    <option value='P' {% if delivery_choice == "P" %}selected{% endif %}>
+                                        Pick Up
+                                    </option>
+                                    <option value='D' {% if delivery_choice == "D" %}selected{% endif %}>
+                                        Delivered
+                                    </option>
+                                </select>
+                                <button type="submit" name="button_delivery_choice">Update</button>
+                            </div>
+                        </form>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="coupon-container">
+                                <div class="coupon-code-title">Coupon Code</div>
+                                <div class="coupon-code-container">
+                                    <Input type="text" name="input_coupon"/>
+                                    <button type="submit" name="button_coupon" class="button-coupon">APPLY</button>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="error">{{ couponError }}</div>
+                        <div class="success">{{ couponSuccess }}</div>
+                    </div>
+                    <hr />
+                    <a href={% url 'checkout' %}>
+                        <div class="button-item checkout">
+                            CHECKOUT NOW
+                        </div>
+                    </a>
+                    <a href={% url 'home' %}>
+                        <div class="button-item continue-shopping">
+                            CONTINUE SHOPPING
+                        </div>
+                    </a>
+                </div>
             </div>
-        </div>
+        {% else %}
+            <br/>
+            <div class="cart_empty_message">
+                Your cart is empty.
+            </div>
+            <div class="cart_empty_button">
+                <br/>
+                <a href={% url 'home' %}>Browse Products</a>
+            </div>
+        {% endif %}
     </div>
 {% endblock outlet %}
